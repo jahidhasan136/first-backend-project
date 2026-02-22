@@ -11,7 +11,11 @@ const createStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({
+      success: false,
+      message: 'Failed to create student',
+      error: (error as Error).message,
+    });
   }
 };
 
@@ -24,7 +28,11 @@ const getAllStudents = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({
+      success: false,
+      message: 'Failed to retrieve students',
+      error: (error as Error).message,
+    });
   }
 };
 
@@ -38,7 +46,11 @@ const getSingleStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({
+      success: false,
+      message: 'Failed to retrieve student',
+      error: (error as Error).message,
+    });
   }
 };
 

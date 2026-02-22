@@ -2,9 +2,20 @@ import { Schema, model } from 'mongoose';
 import type { Guardian, LocalGuardian, Student, Username } from './student.interface.js';
 
 const userNameSchema = new Schema<Username>({
-  firstName: { type: String, required: [true, 'First name must be required'] },
-  middleName: { type: String },
-  lastName: { type: String, required: [true, 'Last name must be required'] },
+  firstName: {
+    type: String,
+    required: [true, 'First name must be required'],
+    trim: true,
+    maxlength: [20, 'First name must be less than 20 characters'],
+    validate: function (value: string) {
+      const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
+      if (firstNameStr !== value) {
+        throw new Error('First name must start with a capital letter');
+      }
+    },
+  },
+  middleName: { type: String, trim: true },
+  lastName: { type: String, required: [true, 'Last name must be required'], trim: true },
 });
 
 const guardianSchema = new Schema<Guardian>({
