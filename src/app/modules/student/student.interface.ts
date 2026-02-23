@@ -9,7 +9,7 @@ export type Guardian = {
 
 export type Username = {
   firstName: string;
-  middleName: string;
+  middleName?: string | undefined;
   lastName: string;
 };
 
@@ -28,11 +28,11 @@ export type Student = {
   email: string;
   contactNo: string;
   emergencyContactNo: string;
-  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-' | undefined;
   presentAddress: string;
   permanentAddress: string;
   guardian: Guardian;
   localGuardian: LocalGuardian;
-  profileImg?: string;
+  profileImg?: string | undefined;
   isActive: 'active' | 'inactive';
 };

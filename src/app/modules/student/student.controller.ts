@@ -1,10 +1,15 @@
 import type { Request, Response } from 'express';
 import { StudentService } from './student.service.js';
+import studentValidationSchema from './student.validation.js';
 
 const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = req.body;
-    const result = await StudentService.createStudentIntoDB(studentData);
+
+    // Validate the student data using Zod schema
+    const zodParsedData = studentValidationSchema.parse(studentData);
+
+    const result = await StudentService.createStudentIntoDB(zodParsedData);
     res.status(200).json({
       success: true,
       message: 'Student created successfully',

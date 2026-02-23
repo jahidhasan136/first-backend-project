@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import validator from 'validator';
 import type { Guardian, LocalGuardian, Student, Username } from './student.interface.js';
 
 const userNameSchema = new Schema<Username>({
@@ -15,7 +16,15 @@ const userNameSchema = new Schema<Username>({
     },
   },
   middleName: { type: String, trim: true },
-  lastName: { type: String, required: [true, 'Last name must be required'], trim: true },
+  lastName: {
+    type: String,
+    required: [true, 'Last name must be required'],
+    trim: true,
+    validate: {
+      validator: (value: string) => validator.isAlpha(value),
+      message: '{VALUE} is not valid',
+    },
+  },
 });
 
 const guardianSchema = new Schema<Guardian>({
@@ -24,7 +33,7 @@ const guardianSchema = new Schema<Guardian>({
   fatherContactNo: { type: String, required: [true, 'Father contact no must be required'] },
   motherName: { type: String, required: [true, 'Mother name must be required'] },
   motherOccupation: { type: String, required: [true, 'Mother occupation must be required'] },
-  motherContactNo: { type: String, required: [true, 'Mother contact no must be requried'] },
+  motherContactNo: { type: String, required: [true, 'Mother contact no must be required'] },
 });
 
 const LocalGuardianSchema = new Schema<LocalGuardian>({
@@ -48,7 +57,16 @@ const studentSchema = new Schema<Student>({
     },
     required: true,
   },
-  email: { type: String, required: true, unique: true },
+  dateOfBirth: { type: String, required: [true, 'Date of Birth must be required'] },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: {
+      validator: (value: string) => validator.isEmail(value),
+      message: '{VALUE} is not a valid email',
+    },
+  },
   contactNo: { type: String, required: [true, 'Contact no must be required'] },
   emergencyContactNo: { type: String, required: [true, 'Emergency contact no must be required'] },
   bloodGroup: {
