@@ -73,6 +73,11 @@ export const studentValidationSchema = z.object({
       .regex(/^[A-Za-z]+$/, { message: '{VALUE} is not valid' }),
   }),
 
+  password: z
+    .string()
+    .min(1, { message: 'Password must be required' })
+    .max(20, { message: 'Password must be less than 20 characters' }),
+
   gender: z.enum(['male', 'female'], { message: '{VALUE} is not supported' }),
 
   dateOfBirth: z
@@ -114,6 +119,7 @@ export const studentValidationSchema = z.object({
   profileImg: z.string().optional(),
 
   isActive: z.enum(['active', 'inactive']).default('active'),
+  isDeleted: z.boolean().default(false),
 });
 
 export default studentValidationSchema;

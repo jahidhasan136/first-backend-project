@@ -8,6 +8,8 @@ import type {
   TStudent,
   TUsername,
 } from './student.interface.js';
+import bcrypt from 'bcrypt';
+import config from '../../config/index.js';
 
 const userNameSchema = new Schema<TUsername>({
   firstName: {
@@ -56,6 +58,11 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethod>({
     type: userNameSchema,
     required: [true, 'Name must be required'],
   },
+  password: {
+    type: String,
+    required: [true, 'Password must be required'],
+    maxLength: [20, 'password not more than 20 character'],
+  },
   gender: {
     type: String,
     enum: {
@@ -103,9 +110,34 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethod>({
     default: 'active',
     required: true,
   },
+  isDeleted: { type: Boolean, default: false },
 });
 
-studentSchema.methods.isuserExists = async function (id: string) {
+// pre save middleware/hook
+studentSchema.pre('save', async function () {
+  // hashing password and save into DB
+  this.password = await bcrypt.hash(this.password, Number(config.bcryptSaltRounds));
+});
+
+// post save middleware/hook
+studentSchema.post('save', function (doc, next) {
+  doc.password = '';
+  // console.log(this, 'post hook : data saved successfully');
+  next();
+});
+
+// query middleware/hook
+studentSchema.pre('find', function () {
+  this.find({ isDeleted: false });
+});
+studentSchema.pre('findOne', function () {
+  this.find({ isDeleted: false });
+});
+studentSchema.pre('aggregate', function () {
+  this.pipeline().unshift({ $match: { isDeleted: false } });
+});
+
+studentSchema.methods.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });
 
   return existingUser;

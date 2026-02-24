@@ -25,6 +25,7 @@ export type TLocalGuardian = {
 export type TStudent = {
   id: string;
   name: TUsername;
+  password: string;
   gender: 'male' | 'female';
   dateOfBirth: string;
   email: string;
@@ -37,10 +38,11 @@ export type TStudent = {
   localGuardian: TLocalGuardian;
   profileImg?: string | undefined;
   isActive: 'active' | 'inactive';
+  isDeleted: boolean;
 };
 
 export type StudentMethod = {
-  isUseExists(id: string): Promise<TStudent | null>;
+  isUserExists(id: string): Promise<TStudent | null>;
 };
 
 export type StudentModel = Model<TStudent, Record<string, never>, StudentMethod>;

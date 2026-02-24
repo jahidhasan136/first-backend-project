@@ -7,7 +7,7 @@ const createStudentIntoDB = async (studentData: TStudent) => {
 
   // builtin instance method
   const student = new Student(studentData);
-  if (await student.isUseExists(studentData.id)) {
+  if (await student.isUserExists(studentData.id)) {
     throw new Error('Student already exists');
   }
   const result = await student.save();
@@ -24,8 +24,20 @@ const getSingleStudentFromDb = async (id: string) => {
   return result;
 };
 
+const updateSingleStudentFromDb = async (id: string, updateData: Partial<TStudent>) => {
+  const result = await Student.updateOne({ id }, updateData);
+  return result;
+};
+
+const deleteStudentFromDb = async (id: string) => {
+  const result = await Student.updateOne({ id }, { isDeleted: true });
+  return result;
+};
+
 export const StudentService = {
   createStudentIntoDB,
   getAllStudentsFromDb,
   getSingleStudentFromDb,
+  updateSingleStudentFromDb,
+  deleteStudentFromDb,
 };
