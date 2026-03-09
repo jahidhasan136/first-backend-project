@@ -1,7 +1,7 @@
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { StudentService } from './student.service.js';
 
-const getAllStudents = async (req: Request, res: Response) => {
+const getAllStudents = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await StudentService.getAllStudentsFromDb();
     res.status(200).json({
@@ -10,15 +10,11 @@ const getAllStudents = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: 'Failed to retrieve students',
-      error: (error as Error).message,
-    });
+    next(error);
   }
 };
 
-const getSingleStudent = async (req: Request, res: Response) => {
+const getSingleStudent = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { studentId } = req.params as { studentId: string };
     const result = await StudentService.getSingleStudentFromDb(studentId);
@@ -28,15 +24,11 @@ const getSingleStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: 'Failed to retrieve student',
-      error: (error as Error).message,
-    });
+    next(error);
   }
 };
 
-const updateSingleStudent = async (req: Request, res: Response) => {
+const updateSingleStudent = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { studentId } = req.params as { studentId: string };
     const { student: studentData } = req.body;
@@ -47,15 +39,11 @@ const updateSingleStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: 'Failed to update student',
-      error: (error as Error).message,
-    });
+    next(error);
   }
 };
 
-const deleteStudent = async (req: Request, res: Response) => {
+const deleteStudent = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { studentId } = req.params as { studentId: string };
     const result = await StudentService.deleteStudentFromDb(studentId);
@@ -65,11 +53,7 @@ const deleteStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: 'Failed to delete student',
-      error: (error as Error).message,
-    });
+    next(error);
   }
 };
 
