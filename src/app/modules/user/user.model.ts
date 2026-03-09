@@ -1,5 +1,7 @@
 import { model, Schema } from 'mongoose';
 import type { TUser } from './user.interface.js';
+import config from '../../config/index.js';
+import bcrypt from 'bcrypt';
 
 const userSchema = new Schema<TUser>(
   {
@@ -21,5 +23,18 @@ const userSchema = new Schema<TUser>(
     timestamps: true,
   },
 );
+
+// pre save middleware/hook
+userSchema.pre('save', async function () {
+  // hashing password and save into DB
+  this.password = await bcrypt.hash(this.password, Number(config.bcryptSaltRounds));
+});
+
+// post save middleware/hook
+userSchema.post('save', function (doc, next) {
+  doc.password = '';
+  // console.log(this, 'post hook : data saved successfully');
+  next();
+});
 
 export const User = model<TUser>('User', userSchema);

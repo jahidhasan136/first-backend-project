@@ -8,8 +8,6 @@ import type {
   TStudent,
   TUsername,
 } from './student.interface.js';
-import bcrypt from 'bcrypt';
-import config from '../../config/index.js';
 
 const userNameSchema = new Schema<TUsername>({
   firstName: {
@@ -64,11 +62,6 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethod>({
     type: userNameSchema,
     required: [true, 'Name must be required'],
   },
-  password: {
-    type: String,
-    required: [true, 'Password must be required'],
-    maxLength: [20, 'password not more than 20 character'],
-  },
   gender: {
     type: String,
     enum: {
@@ -108,19 +101,6 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethod>({
   },
   profileImg: { type: String },
   isDeleted: { type: Boolean, default: false },
-});
-
-// pre save middleware/hook
-studentSchema.pre('save', async function () {
-  // hashing password and save into DB
-  this.password = await bcrypt.hash(this.password, Number(config.bcryptSaltRounds));
-});
-
-// post save middleware/hook
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  // console.log(this, 'post hook : data saved successfully');
-  next();
 });
 
 // query middleware/hook
