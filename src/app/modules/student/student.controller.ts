@@ -1,9 +1,9 @@
-import type { NextFunction, Request, Response } from 'express';
+import type { RequestHandler } from 'express';
 import { StudentService } from './student.service.js';
 import sendResponse from '../../utils/sendResponse.js';
 import status from 'http-status';
 
-const getAllStudents = async (req: Request, res: Response, next: NextFunction) => {
+const getAllStudents: RequestHandler = async (req, res, next) => {
   try {
     const result = await StudentService.getAllStudentsFromDb();
 
@@ -18,7 +18,7 @@ const getAllStudents = async (req: Request, res: Response, next: NextFunction) =
   }
 };
 
-const getSingleStudent = async (req: Request, res: Response, next: NextFunction) => {
+const getSingleStudent: RequestHandler = async (req, res, next) => {
   try {
     const { studentId } = req.params as { studentId: string };
     const result = await StudentService.getSingleStudentFromDb(studentId);
@@ -34,7 +34,7 @@ const getSingleStudent = async (req: Request, res: Response, next: NextFunction)
   }
 };
 
-const updateSingleStudent = async (req: Request, res: Response, next: NextFunction) => {
+const updateSingleStudent: RequestHandler = async (req, res, next) => {
   try {
     const { studentId } = req.params as { studentId: string };
     const { student: studentData } = req.body;
@@ -51,7 +51,7 @@ const updateSingleStudent = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-const deleteStudent = async (req: Request, res: Response, next: NextFunction) => {
+const deleteStudent: RequestHandler = async (req, res, next) => {
   try {
     const { studentId } = req.params as { studentId: string };
     const result = await StudentService.deleteStudentFromDb(studentId);
